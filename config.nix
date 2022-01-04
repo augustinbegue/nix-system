@@ -70,6 +70,13 @@
   networking.networkmanager.enable = true;
   # Connect to a WiFi: nmcli device wifi connect <SSID> password <PASS>
 
+  ## SSH ##
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = false;
+    permitRootLogin = "no";
+  };
+
   ## OneDrive ##
   services.onedrive.enable = true;
 
@@ -139,6 +146,10 @@
   users.users.abegue = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
+    openssh.authorizedKeys.keys = [
+      # Desktop - WSL Arch
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEOj0bhewnRSUbAM2AstdZFMk2VM53MDrEW7P1M2RK8I abegue@DESKTOP-76FKIPG"
+    ];
   };
 
   ## PACKAGES ##
@@ -188,15 +199,17 @@
   # };
 
   # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+  networking.firewall = {
+    enable = true;
+
+    allowedTCPPorts = [
+      22
+    ];
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
