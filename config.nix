@@ -84,13 +84,8 @@
   # Enable zsh
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
-
-  # Oh My Zsh
-  programs.zsh.ohMyZsh = {
-    enable = true;
-    plugins = [ "git" ];
-  };
-
+  # Package completion
+  environment.pathsToLink = [ "/share/zsh" ];
   programs.zsh.promptInit = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
 
   ## Graphical Interface ##
@@ -169,6 +164,7 @@
     google-chrome
     firefox
     discord
+    discord-canary
     # System
     nixpkgs-fmt
     lsof
@@ -181,6 +177,7 @@
     neofetch
     wget
     bpytop
+    nnn
     # Media
     spotify
   ];
