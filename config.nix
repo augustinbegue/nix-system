@@ -2,18 +2,20 @@
 
 {
   # Hardware / Boot config
+  boot.kernelModules = [ "kvm-amd" ];
   boot.initrd.kernelModules = [ "amdgpu" ];
   hardware.enableAllFirmware = true;
+  
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "huawei-nixos"; # Define your hostname.
 
   # Set your time zone.
-  time.timeZone = "Europe/Paris";
+  time.timeZone = "PST8PDT";
 
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
+ # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
@@ -103,7 +105,30 @@
 
     displayManager = {
       defaultSession = "none+i3";
-      lightdm.enable = true;
+      lightdm = {
+        enable = true;
+        greeters.mini = {
+          enable = true;
+          user = "abegue";
+          extraConfig = ''
+            [Seat:*]
+            user-session = ${config.services.xserver.displayManager.defaultSession}
+
+            [greeter-theme]
+            font = mono
+            font-size = 1.1em
+            text-color = "#282C34"
+            window-color = "#61AFEF"
+            background-image = ""
+            background-color = "#282C34"
+            border-color = "#61AFEF"
+            password-color = "#ABB2BF"
+            password-background-color = "#282C34"
+            password-border-color = "#61AFEF"
+            password-border-width = 2px
+            '';
+        };
+      };
     };
 
     windowManager.i3 = {
@@ -140,7 +165,7 @@
   # };
   users.users.abegue = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
+    extraGroups = [ "adbuser" "wheel" "networkmanager" "video" "audio" ];
     openssh.authorizedKeys.keys = [
       # Desktop - WSL Arch
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEOj0bhewnRSUbAM2AstdZFMk2VM53MDrEW7P1M2RK8I abegue@DESKTOP-76FKIPG"
@@ -158,6 +183,12 @@
     # Dev
     git
     nodejs
+    python
+    gcc
+    cmake
+    clang
+    gnumake
+    binutils
     # Terminal
     alacritty
     # Browsers
@@ -182,9 +213,13 @@
     spotify
   ];
 
+  # Enable adb
+  programs.adb.enable = true;
+
   # Install fonts from NerdFonts
   fonts.fonts = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "CascadiaCode" ]; })
+    ibm-plex
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
