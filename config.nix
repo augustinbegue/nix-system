@@ -13,7 +13,7 @@
   networking.hostName = "huawei-nixos"; # Define your hostname.
 
   # Set your time zone.
-  time.timeZone = "PST8PDT";
+  time.timeZone = "CEST";
 
  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
@@ -60,10 +60,6 @@
     #   # load-module module-bluez5-device
     #   # load-module module-bluez5-discover
     # '';
-
-    extraModules = [ 
-      pkgs.pulseaudio-modules-bt
-    ];
     package = pkgs.pulseaudioFull;
   };
 
@@ -140,15 +136,17 @@
     };
   };
 
-  # Enable OpenGL for 32 bits programs
+  hardware.opengl.enable = true;
   hardware.opengl.driSupport = true;
   hardware.opengl.driSupport32Bit = true;
 
   # OpenGL packages for AMD GPUs
   hardware.opengl.extraPackages = with pkgs; [
-    amdvlk
     rocm-opencl-icd
     rocm-opencl-runtime
+  ];
+
+  hardware.opengl.extraPackages32 = with pkgs;  [
   ];
 
   # Backlight control
@@ -157,6 +155,8 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # keyring
+  services.gnome.gnome-keyring.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   # users.users.jane = {
@@ -190,7 +190,6 @@
     gnumake
     binutils
     # Terminal
-    alacritty
     # Browsers
     google-chrome
     firefox
